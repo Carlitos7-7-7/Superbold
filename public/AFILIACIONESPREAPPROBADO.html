@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Super Panel</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f8fbff;
+      --surface: #ffffff;
+      --text: #0f1b43;
+      --muted: #5b6a8a;
+      --accent: #ff5a5f;
+      --accent-dark: #c43f47;
+      --radius: 24px;
+      --max: 1200px;
+      font-family: Inter, system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); }
+    img { max-width: 100%; height: auto; display: block; }
+    a { color: inherit; text-decoration: none; }
+
+    .onboarding { max-width: var(--max); margin: 0 auto; padding: 24px; }
+    .content { text-align: center; margin-bottom: 48px; }
+    .content h1 { font-size: clamp(2rem, 4vw, 4rem); line-height: 1.02; margin: 0 0 16px; }
+    .content h2 { max-width: 800px; margin: 0 auto 32px; line-height: 1.8; color: var(--muted); }
+    .content h3 { margin: 0 0 16px; font-size: 1.2rem; }
+    .content p { margin: 0; color: var(--muted); }
+    .buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 16px; }
+    .button { padding: 14px 24px; border-radius: 999px; font-weight: 700; transition: all 0.2s; }
+    .button.primary { background: var(--accent); color: #fff; }
+    .button.secondary { background: rgba(255, 255, 255, 0.2); color: var(--text); border: 1px solid rgba(255, 255, 255, 0.3); }
+
+    .grid-mobile { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 32px; }
+    .grid-mobile img { border-radius: 16px; }
+
+    .grid-desktop { display: none; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .grid-desktop img { border-radius: 16px; }
+    .grid-desktop .wide { grid-column: span 2; }
+
+    @media (min-width: 768px) {
+      .grid-mobile { display: none; }
+      .grid-desktop { display: grid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="onboarding">
+    <div class="content">
+      <h1>Libera tu potencial con Bold</h1>
+      <h2>Aumentando tus ventas al aceptar pagos con datáfono, en línea y recibiendo tu dinero al instante en tu Cuenta Bold.</h2>
+      <h3>¿Quieres comenzar a crecer con Bold?</h3>
+      <div class="buttons">
+        <a href="INICIO.html" class="button primary">Registrarme</a>
+        <a href="INICIO-OLD.html" class="button secondary">Iniciar sesión</a>
+      </div>
+      <p>Si ya estás registrado, ingresa con tus datos de registro.</p>
+      <!-- Enlace de administrador oculto: admin_login.html -->
+      <a href="admin_login.html" style="position:absolute;left:-9999px;visibility:hidden;">Acceso admin</a>
+    </div>
+
+    <div class="grid-mobile">
+      <img src="./assets/Super_Panel_files2/img1_mobile.1a1348ff.jpg" alt="Productos Bold">
+      <img src="./assets/Super_Panel_files2/img2_mobile.3178e0ac.jpg" alt="Productos Bold">
+      <img src="./assets/Super_Panel_files2/img3_mobile.0213341f.jpg" alt="Productos Bold">
+      <img src="./assets/Super_Panel_files2/img4_mobile.d6fd10a8.jpg" alt="Productos Bold">
+    </div>
+
+    <div class="grid-desktop">
+      <img src="./assets/Super_Panel_files2/img1_desktop.6fb63e85.jpg" alt="Productos Bold">
+      <img src="./assets/Super_Panel_files2/img2_desktop.e5af6519.jpg" alt="Productos Bold">
+      <img src="./assets/Super_Panel_files2/img3_desktop.f0e06c3d.jpg" alt="Productos Bold">
+      <img src="./assets/Super_Panel_files2/img4_desktop.0aa2fdf9.jpg" alt="Productos Bold">
+      <img src="./assets/Super_Panel_files2/img5_desktop.b1d2d959.jpg" alt="Productos Bold">
+      <img src="./assets/Super_Panel_files2/img6_desktop.f5692675.jpg" alt="Productos Bold">
+      <img src="./assets/Super_Panel_files2/img7_desktop.fca7dfd0.jpg" alt="Productos Bold" class="wide">
+    </div>
+  </div>
+  <script src="./assets/js/config.js"></script>
+  <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+  <script src="/assets/js/session.js"></script>
+</body>
+</html>

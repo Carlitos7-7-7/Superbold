@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cupo Bold</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f8fbff;
+      --surface: #ffffff;
+      --text: #0f1b43;
+      --muted: #5b6a8a;
+      --accent: #ff5a5f;
+      --accent-dark: #c43f47;
+      --radius: 24px;
+      --max: 1200px;
+      font-family: Inter, system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); }
+    img { max-width: 100%; height: auto; display: block; }
+    a { color: inherit; text-decoration: none; }
+
+    header { background: #fff; position: sticky; top: 0; z-index: 20; border-bottom: 1px solid rgba(15, 27, 67, .08); }
+    .topbar { max-width: var(--max); margin: 0 auto; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .brand { font-weight: 800; letter-spacing: -.02em; font-size: 1.1rem; }
+    .nav-links { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+    .nav-links a { font-size: .95rem; color: var(--muted); }
+    .nav-links .button { padding: 10px 18px; border-radius: 999px; border: 1px solid transparent; background: var(--accent); color: #fff; font-weight: 700; }
+
+    main { max-width: var(--max); margin: 0 auto; padding: 24px; }
+    .hero { display: grid; gap: 32px; align-items: center; grid-template-columns: minmax(0, 1.05fr) 0.95fr; margin-bottom: 48px; }
+    .hero-content h1 { font-size: clamp(2rem, 4vw, 4rem); line-height: 1.02; margin: 0 0 16px; }
+    .hero-content p { max-width: 620px; line-height: 1.8; color: var(--muted); margin: 0 0 24px; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; }
+    .hero-actions a { padding: 14px 22px; border-radius: 999px; font-weight: 700; }
+    .hero-actions .primary { background: var(--accent); color: #fff; }
+    .hero-actions .secondary { background: rgba(15, 27, 67, .06); color: var(--text); }
+    .hero-visual { border-radius: 32px; overflow: hidden; background: linear-gradient(180deg, #eef4ff 0%, #ffffff 100%); }
+    .hero-visual img { width: 100%; display: block; }
+
+    .section { background: #fff; border-radius: 32px; padding: 32px; margin-bottom: 32px; box-shadow: 0 24px 80px rgba(15, 27, 67, .08); }
+    .section h2 { margin: 0 0 16px; font-size: clamp(1.8rem, 3vw, 2.8rem); }
+    .section p { color: var(--muted); line-height: 1.8; }
+    .cards { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-top: 24px; }
+    .card { background: var(--bg); border-radius: 24px; padding: 24px; border: 1px solid rgba(15,27,67,.06); }
+    .card h3 { margin: 0 0 12px; font-size: 1.1rem; }
+    .card p { margin: 0; color: var(--muted); }
+
+    .steps { display: grid; gap: 20px; }
+    .step { display: grid; gap: 12px; padding: 24px; border-radius: 24px; background: #f4f8ff; }
+    .step-number { width: 52px; height: 52px; display: grid; place-items: center; border-radius: 16px; background: var(--accent); color: #fff; font-weight: 800; }
+    .step h3 { margin: 0; font-size: 1.1rem; }
+    .step p { margin: 0; color: var(--muted); }
+
+    .cta-grid { display: grid; gap: 24px; align-items: center; grid-template-columns: 1fr 1fr; }
+    .cta-grid .cta-copy h2 { margin: 0 0 14px; }
+    .cta-grid .cta-copy p { margin: 0 0 18px; }
+    .cta-card { border-radius: 32px; overflow: hidden; background: #eef4ff; min-height: 260px; }
+    .cta-card img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+    .faq details { background: #f7f9ff; border-radius: 20px; padding: 20px; margin-bottom: 16px; }
+    .faq summary { font-size: 1rem; font-weight: 700; cursor: pointer; color: var(--text); outline: none; }
+    .faq p { margin: 14px 0 0; color: var(--muted); }
+
+    @media (max-width: 960px) {
+      .hero { grid-template-columns: 1fr; }
+      .cta-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="topbar">
+      <div class="brand">Bold</div>
+      <div class="nav-links">
+        <a href="AFILIACIONESPRE-APPROBADO.html">Negocios</a>
+        <a href="AFILIACIONESPRE-APPROBADO.html">Personas</a>
+        <a class="button" href="INICIO-OLD.html">Iniciar sesión</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <p class="eyebrow" style="text-transform: uppercase; letter-spacing: .24em; font-weight: 700; color: var(--accent); margin-bottom: 16px;">Crédito empresarial</p>
+        <h1>Cupo Bold para impulsar tu negocio sin complicaciones</h1>
+        <p>Consigue capital rápido con un crédito pensado para emprendimientos y comercios. Ajusta texto, imágenes y llamadas a la acción según lo necesites.</p>
+        <div class="hero-actions">
+          <a class="primary" href="AFILIACIONESPRE-APPROBADO.html">Solicitar Cupo</a>
+          <a class="secondary" href="#info">Ver beneficios</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <img src="./assets/Cupo_Bold_files/sono-xl.png" alt="Estructura visual de Cupo Bold" loading="lazy">
+      </div>
+    </section>
+
+    <section class="section" id="info">
+      <h2>El crédito que entiende a los negocios</h2>
+      <p>Tu página se mantiene como estructura clara y ordenada. Aquí puedes cambiar los textos, las imágenes y los enlaces a tu nuevo sitio web sin depender de ningún script externo.</p>
+      <div class="cards">
+        <article class="card">
+          <h3>Aprobación rápida</h3>
+          <p>Evaluamos tu historial de ventas para ofrecerte una propuesta en menos de 24 horas.</p>
+        </article>
+        <article class="card">
+          <h3>Sin papeleo largo</h3>
+          <p>Mantén el proceso simple con información clara y accesible desde el primer momento.</p>
+        </article>
+        <article class="card">
+          <h3>Desembolso express</h3>
+          <p>Recibe el dinero en máximo 1 día hábil directo a tu cuenta.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Obtenerlo es muy fácil</h2>
+      <p>Conecta tu negocio y comienza a recibir financiamiento sin complicaciones.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3>Revisa tu historial</h3>
+          <p>Usamos tus ventas para determinar el mejor Cupo Bold para tu negocio.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3>Recibe la aprobación</h3>
+          <p>Te avisamos rápidamente para que sigas con la tranquilidad de un proceso ágil.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3>Disfruta el crédito</h3>
+          <p>Utiliza el capital para crecer tu negocio y paga de forma flexible.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="cta-grid">
+        <div class="cta-copy">
+          <h2>Empieza hoy mismo</h2>
+          <p>Conserva el diseño original como base y modifica el contenido según tu nueva marca.</p>
+          <a class="button primary" href="INICIO-OLD.html">Pedir crédito</a>
+        </div>
+        <div class="cta-card">
+          <img src="./assets/Cupo_Bold_files/bg-md.jpg" alt="Imagen ilustrativa del crédito" loading="lazy">
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;">
+        <h2>Educación financiera</h2>
+        <a href="#" style="color: var(--accent); font-weight: 700;">Visita Academia</a>
+      </div>
+      <div class="cards">
+        <article class="card">
+          <h3>Guía para colombianos</h3>
+          <p>Aprende a administrar mejor tu crédito y a crecer tus ventas de forma sostenible.</p>
+        </article>
+        <article class="card">
+          <h3>Cómo elegir tu cupo</h3>
+          <p>Descubre qué opciones financieras se adaptan mejor a tu ritmo de negocio.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section faq">
+      <h2>Preguntas frecuentes</h2>
+      <details>
+        <summary>¿Cuánto tiempo tarda la aprobación?</summary>
+        <p>Generalmente en menos de un día hábil, según tu información y las ventas de tu negocio.</p>
+      </details>
+      <details>
+        <summary>¿Qué necesito para solicitarlo?</summary>
+        <p>Solo tus datos básicos y detalles de facturación. El resto del proceso es rápido y claro.</p>
+      </details>
+      <details>
+        <summary>¿Puedo ajustar el crédito?</summary>
+        <p>Sí, puedes definir el monto y las condiciones según tu flujo de caja.</p>
+      </details>
+    </section>
+  </main>
+</body>
+</html>
